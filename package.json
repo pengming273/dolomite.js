@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "<TODO>"
+    "url": "https://github.com/zrubenst/dolomite.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "<TODO>/issues"
+    "url": "https://github.com/zrubenst/dolomite.js/issues"
   },
-  "homepage": "<TODO>#readme",
+  "homepage": "https://github.com/zrubenst/dolomite.js#readme",
   "dependencies": {
     "datejs": "^1.0.0-rc3",
     "fetch-mock": "^6.4.4",
