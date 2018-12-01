@@ -42,6 +42,8 @@ export default class Pageable extends Array {
     const responseGlobals = global_objects || {};
     const list = this.buildData(responseData, responseGlobals);
     this.push(...list);
+
+    this.hasNextPage = this.pageSize === this.length;
   }
 
   /*
@@ -52,6 +54,7 @@ export default class Pageable extends Array {
     this.pageNumber = nextPage.page_number;
     this.pageSize = nextPage.page_size;
     this.sortOrder = nextPage.sort_order;
+    this.hasNextPage = nextPage.hasNextPage;
   }
 
   /*
@@ -75,20 +78,36 @@ export default class Pageable extends Array {
       ...this.request.options,
       page_number: this.pageNumber + 1,
       page_size: this.pageSize,
-    }, null, this);
+    }, null, this).then((page) => {
+      if (this.onNextPageLoaded) this.onNextPageLoaded(page);
+      return page;
+    });
+  }
+
+  update(arrayOrSingle) {
+    const array = (arrayOrSingle instanceof Array) ? arrayOrSingle : [arrayOrSingle];
+    this.unshift(...array);
   }
 
   get canGetNextPage() {
     return !!this.request && this.hasNextPage;
   }
 
-  get hasNextPage() {
-    // TODO: implement this
-    return true;
-  }
-
   toJSON() {
     return [...this];
+  }
+
+  /*
+   * returns an array of unique items given a map callback
+   * Usage: array.unique(item => item.id)
+   */
+  unique(on) {
+    return this.filter((item, i, array) => 
+      array.findIndex((check) => on(check) == on(item)) == i);
+  }
+
+  get isPaged() {
+    return true;
   }
 }
 
@@ -151,7 +170,7 @@ class PageableRequest {
 
         if (previousPage) {
           previousPage.updatePageFields(nextPage);
-          previousPage.push(...nextPage)
+          previousPage.push(...nextPage);
           page = previousPage;
         }
 

@@ -1,4 +1,4 @@
-import slate from '../../src/slate';
+import { slate } from '../../src';
 
 const address = '0x0000000000000000000000000000000000000000';
 

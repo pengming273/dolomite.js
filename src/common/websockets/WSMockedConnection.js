@@ -51,6 +51,11 @@ export default class WSMockedConnection extends WSConnection {
   }
 
   // Overridden
+  isConnected() {
+    return true;
+  }
+
+  // Overridden
   send(route, action, payload) {
     return new Promise((resolve, reject) => {
       const mock = this.findMock(route, action);

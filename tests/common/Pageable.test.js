@@ -43,7 +43,7 @@ class FakeService extends Service {
         },
     };
 
-    super(url, routes, mocks);
+    super(url, null, routes, mocks);
   }
 
   getFakes(options = {}) {

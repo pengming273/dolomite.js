@@ -5,14 +5,14 @@ import mocks from '../../__mocks/Exchange/markets.http.js';
 import wsmocks from '../../__mocks/Exchange/websockets/markets.ws.js';
 
 export default class MarketService extends Service {
-  constructor(url) {
+  constructor(url, websocket) {
     const routes = {
       markets: {
         get: '/v1/markets'
       }
     };
 
-    super(url, routes, mocks, wsmocks);
+    super(url, websocket, routes, mocks, wsmocks);
   }
 
   getAll(options = {}) {

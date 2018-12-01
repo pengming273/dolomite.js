@@ -30,7 +30,7 @@ class MockService extends Service {
       }
     };
 
-    super(url, routes, mocks);
+    super(url, null, routes, mocks);
   }
 
   getTest(param) {

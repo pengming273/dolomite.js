@@ -1,5 +1,5 @@
 import * as mock from '../../_globalMocks';
-import Transfer from '../../../slate/Activity/Transfer';
+import Transfer from '../../../Slate/Activity/Transfer';
 import MockTokenSummary from './MockTokenSummary';
 
 export default class MockTransfer {
@@ -12,14 +12,18 @@ export default class MockTransfer {
     const isToken = type == Transfer.Type.TOKEN;
     const isEth = type == Transfer.Type.ETHER;
     const isWeth = type == Transfer.Type.WETH_DEPOSIT || Transfer.Type.WETH_WITHDRAWAL;
+    const isContract = type == Transfer.Type.CONTRACT;
     const token = isToken ? MockTokenSummary.random
       : isEth ? MockTokenSummary.All.ETH
       : isWeth ? MockTokenSummary.All.WETH : null;
 
-    const amount = mock.randomChange(1, 0.9);
+    let amount = mock.randomChange(1, 0.9);
     const fee = mock.randomChange(0.002, 0.05);
 
+    if (isContract) amount = mock.sample([amount, 0]);
+
     return {
+      transaction_id: mock.uuid(),
       transaction_hash: mock.transactionHash(), 
       primary_wallet_address: primaryAddress, 
       secondary_wallet_address: secondaryAddress, 

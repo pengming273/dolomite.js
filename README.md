@@ -1,11 +1,11 @@
-# Dolomite Exchange Service
+# Dolomite JS
 
-Javascript library for interacting with the Dolomite Exchange API
+Javascript library for interacting with the Dolomite Exchange API and Slate API
 
 ## Install
 
 ```shell
-npm install dolomite-exchange --save
+npm install dolomite --save
 ```
 
 ## Development
@@ -16,7 +16,7 @@ Clone the repository and install `npm`, then install the dependencies
 npm install
 ```
 
-Start the `Development Server` which will automatically build your code for ES5 compliance and put it into the `lib` directory
+Start the `Development Server` which will automatically build your code for ES5 compliance and put it into the `lib_dev` directory
 
 ```shell
 npm start
@@ -39,3 +39,5 @@ Increment the `version` in `package.json` and then run
 ```shell
 npm run release
 ```
+
+This will place the updated ES5 compliant code into the `lib` directory, which is the directory used by npm

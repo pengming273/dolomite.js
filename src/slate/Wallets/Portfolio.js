@@ -1,4 +1,5 @@
 import BigNumber from '../../common/BigNumber';
+import Period from './Period';
 
 const toPercent = (p) => parseFloat(((p || 0) * 100).toFixed(2));
 
@@ -15,13 +16,5 @@ export default class Portfolio {
   }
 }
 
-Portfolio.Period = {
-  ONE_DAY: 'ONE_DAY',
-  ONE_WEEK: 'ONE_WEEK',
-  ONE_MONTH: 'ONE_MONTH',
-  THREE_MONTH: 'THREE_MONTH',
-  SIX_MONTH: 'SIX_MONTH',
-  ONE_YEAR: 'ONE_YEAR',
-};
-
-Portfolio.Periods = Object.values(Portfolio.Period);
+Portfolio.Period = Period;
+Portfolio.Periods = Object.values(Period);

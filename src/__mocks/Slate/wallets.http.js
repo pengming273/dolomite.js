@@ -1,6 +1,8 @@
 import * as mock from '../_globalMocks';
 import MockPortfolio from './__models/MockPortfolio';
 import MockHolding from './__models/MockHolding';
+import MockPortfolioGraph from './__models/MockPortfolioGraph';
+import Period from '../../Slate/Wallets/Period';
 
 export default {
   '/v1/wallets/:address/portfolio-info': {
@@ -35,5 +37,22 @@ export default {
         ]
       };
     })
-  }
+  },
+  '/v1/wallets/:address/historical-values': {
+    get: (path, request) => {
+      const period = request.body.period || Period.ONE_DAY;
+      
+      return {
+        data: {
+          currency: {
+            name: { singular: 'Dollar', plural: 'Dollars' },
+            ticker: 'USD',
+            precision: 5,
+            display_precision: 2
+          },
+          time_price_pairs: MockPortfolioGraph.fake(period)
+        }
+      }
+    }
+  },
 };

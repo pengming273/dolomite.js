@@ -40,15 +40,22 @@ export class GenericError extends ServiceError {
  * functions (get, post, etc.) and routing
  */
 export default class Service {
-  constructor(url, routes = {}, mocks = {}, wsMocks = {}) {
+  constructor(url, getWebsocket, routes = {}, mocks = {}, wsMocks = {}) {
     this.url = url;
     this.apiKey = null;
 
     this.routes = routes;
     this.mocks = mocks;
     this.wsMocks = wsMocks;
-
-    WSManager.registerMocks(wsMocks);
+    
+    if (!getWebsocket) {
+      const wsManager = new WSManager();
+      getWebsocket = (() => wsManager);
+    }
+    
+    getWebsocket().registerMocks(wsMocks);
+    
+    this.getWebsocket = getWebsocket;
     this.configureOptions();
   }
 
@@ -93,6 +100,13 @@ export default class Service {
   }
 
   /*
+   * Get for WSManager instance
+   */
+  get websocket() {
+    return this.getWebsocket();
+  }
+
+  /*
    * Subscribe to a websocket route with a callback and build function
    *
    * Usage: 
@@ -104,13 +118,13 @@ export default class Service {
     return {
       build: (buildCallback) => ({
         then: (callback) => {
-          WSManager.subscribe(route, action, (data) => {
+          this.websocket.subscribe(route, action, (data) => {
             callback(buildCallback(data));
           });
         }
       }),
       then: (callback) => {
-        WSManager.subscribe(route, action, (data) => {
+        this.websocket.subscribe(route, action, (data) => {
           callback(data);
         });
       }
@@ -124,7 +138,7 @@ export default class Service {
    * return this.send(<route>, <action>, <params>);
    */
   send(route, action, params) {
-    return WSManager.send(route, action, params);
+    return this.websocket.send(route, action, params);
   }
 
   /*

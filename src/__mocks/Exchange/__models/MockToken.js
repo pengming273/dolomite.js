@@ -1,4 +1,4 @@
-import Token from '../../../exchange/Tokens/Token';
+import Token from '../../../Exchange/Tokens/Token';
 
 export default class MockToken {
   static get All() {

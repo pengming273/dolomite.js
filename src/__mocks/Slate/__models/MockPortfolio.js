@@ -1,5 +1,5 @@
 import * as mock from '../../_globalMocks.js';
-import Portfolio from '../../../slate/Wallets/Portfolio';
+import Portfolio from '../../../Slate/Wallets/Portfolio';
 
 export default class MockPortfolio {
   static fake() {

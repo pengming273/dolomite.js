@@ -5,38 +5,48 @@ import WSMockedConnection from './WSMockedConnection';
  * 
  */
 export default class WSManager {
+  constructor() {
+    this.mocks = {};
+    this.connection = WSConnection.none;
+  }
 
-  static registerMocks(mocks) {
+  mock() {
+    this.setConnection(new WSMockedConnection({
+      getMocks: () => this.mocks
+    }));
+  }
+
+  registerMocks(mocks) {
     Object.keys(mocks).forEach(route => {
-      if (!WSManager.mocks[route]) WSManager.mocks[route] = mocks[route];
+      if (!this.mocks[route]) this.mocks[route] = mocks[route];
       else Object.keys(mocks[route]).forEach(action => {
-        WSManager.mocks[route][action] = mocks[route][action];
+        this.mocks[route][action] = mocks[route][action];
       });
     })
   }
 
-  static subscribe(route, action, callback) {
-    WSManager.connection.subscribe(route, action, callback);
+  subscribe(route, action, callback) {
+    this.connection.subscribe(route, action, callback);
   }
 
-  static send(route, action, payload) {
-    return WSManager.connection.send(route, action, payload);
+  send(route, action, payload) {
+    return this.connection.send(route, action, payload);
   }
 
-  static setConnection(connection) {
-    const previousConnection = WSManager.connection;
+  setConnection(connection) {
+    const previousConnection = this.connection;
     previousConnection.disconnect();
     connection.addSubscriptions(previousConnection.getSubscriptions());
-    WSManager.connection = connection;
+    this.connection = connection;
   }
 
-  static disconnect() {
-    WSManager.connection.disconnect();
-    WSManager.connection = WSConnection.interface;
+  disconnect() {
+    this.connection.disconnect();
+    this.connection = WSConnection.none;
+  }
+
+  isConnected() {
+    const conn = this.connection || { isConnected: () => false };
+    return conn.isConnected() || false;
   }
 }
-
-WSManager.mocks = {};
-WSManager.connection = new WSMockedConnection({
-  getMocks: () => WSManager.mocks
-});

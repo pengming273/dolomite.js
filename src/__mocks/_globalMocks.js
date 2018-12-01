@@ -1,5 +1,5 @@
 import RandExp from 'randexp';
-import uuid from 'uuid';
+import uuidImport from 'uuid';
 
 /*
  * Commonly used helper functions
@@ -10,6 +10,7 @@ export const transactionHash = () => new RandExp(/^0x([A-Fa-f0-9]{64})$/).gen();
 export const address = () => new RandExp(/^0x[a-fA-F0-9]{40}$/).gen();
 export const randomRounded = (num, p, c = 0.05) => parseFloat((num + (Math.random() * 0.05 * num)).toFixed(p));
 export const randomChange = (num, c = 0.05) => randomRounded(num, 5, c);
+export const uuid = uuidImport;
 
 /*
  * Create a Paged response

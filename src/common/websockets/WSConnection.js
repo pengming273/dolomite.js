@@ -9,13 +9,13 @@ export default class WSConnection {
   }
 
   setupStream(stream) {
+    this.connected = true;
     this.stream = stream;
 
     this.stream.onmessage = (message) => {
       const event = JSON.parse(message.data);
 
       const { route, action, data } = event;
-      console.log(event);
       this.trigger(route, action, data);
     };
   }
@@ -43,6 +43,10 @@ export default class WSConnection {
         resolve({ status: 'connected' });
       };
     });
+  }
+
+  isConnected() {
+    return this.connected || false;
   }
 
   disconnect() {
@@ -100,6 +104,10 @@ export default class WSConnection {
       this.subscribers[route][action] = [];
     this.subscribers[route][action].push(callback);
   }
+
+  static get none() {
+    return new WSConnection();
+  }
 }
 
 WSConnection.interface = {
@@ -108,5 +116,6 @@ WSConnection.interface = {
   establish: (url) => new Promise((res, rej) => rej()),
   disconnect: () => {},
   send: (route, action, payload) => new Promise((res, rej) => rej()),
-  subscribe: (route, action, callback) => {}
+  subscribe: (route, action, callback) => {},
+  isConnected: () => false,
 };

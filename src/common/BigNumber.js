@@ -10,16 +10,22 @@
  * }
  */
 export default class BigNumber {
-  constructor({ amount, currency }) {
-    this.raw = { amount, currency };
-    this.value = amount;
-    this.currency = {
-      ticker: currency.ticker,
-      precision: currency.precision,
-      displayPrecision: currency.display_precision
-    };
-    this.precision = this.currency.precision;
-    this.amount = this.value / Math.pow(10, this.precision);
+  constructor(raw) {
+    if (raw) {
+      const amount = raw.amount;
+      const currency = raw.currency;
+      
+      this.raw = { amount, currency };
+      this.value = amount;
+      this.currency = {
+        ticker: currency.ticker,
+        precision: currency.precision,
+        displayPrecision: currency.display_precision
+      };
+
+      this.precision = this.currency.precision;
+      this.amount = this.value / Math.pow(10, this.precision);
+    }
   }
 
   get dup() {

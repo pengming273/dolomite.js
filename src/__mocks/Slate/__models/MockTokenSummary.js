@@ -1,5 +1,5 @@
 import * as mock from '../../_globalMocks';
-import TokenSummary from '../../../slate/Tokens/TokenSummary';
+import TokenSummary from '../../../Slate/Tokens/TokenSummary';
 
 export default class MockTokenSummary {
   static get tickers() {

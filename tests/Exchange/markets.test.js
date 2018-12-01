@@ -1,4 +1,4 @@
-import exchange from '../../src/exchange';
+import { exchange } from '../../src';
 
 describe('Exchange.Markets', () => {
   describe('#getAll', () => {
