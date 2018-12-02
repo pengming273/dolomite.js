@@ -41,7 +41,7 @@ export default class WalletService extends Service {
 
   getPortfolioGraph(address, period = Portfolio.Period.ONE_DAY) {
     return this.get('graph', { address, period })
-      .then(body => new PortfolioGraph(body.data));
+      .then(body => new PortfolioGraph({ period, ...body.data }));
   }
 
   watch(address) {
