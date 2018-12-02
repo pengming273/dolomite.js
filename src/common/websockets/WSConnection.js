@@ -83,12 +83,6 @@ export default class WSConnection {
           data: payload
         }));
 
-        console.log(JSON.stringify({
-          route: route,
-          action: action,
-          data: payload
-        }));
-
         resolve({ status: 'sent' });
       } catch(error) { reject(error); }
     });
