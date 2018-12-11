@@ -9,14 +9,14 @@ class Rate {
 
 export default class ExchangeRates {
   constructor(rates) {
-    Object.keys(rates).forEach(ticker => {
-      this[ticker] = new Rate(rates[ticker]);;
+    Object.keys(rates).forEach(dolomiteId => {
+      this[dolomiteId] = new Rate(rates[dolomiteId]);;
     });
   }
 
-  from(amount, ticker) {
+  from(amount, dolomiteId) {
     const to = (baseTicker) => {
-      const token = this[ticker] || {};
+      const token = this[dolomiteId] || {};
       const rate = token[baseTicker];
       if (!rate) return null;
       return rate * amount;
@@ -26,8 +26,8 @@ export default class ExchangeRates {
   }
 
   fromBase(amount, baseTicker) {
-    const to = (ticker) => {
-      const token = this[ticker] || {};
+    const to = (dolomiteId) => {
+      const token = this[dolomiteId] || {};
       const rate = token[baseTicker];
       if (!rate) return null;
       return amount / rate;

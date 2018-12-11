@@ -1,6 +1,7 @@
 import Service from '../../common/Service';
 import TokenSummary from './TokenSummary';
 import TokenDetails from './TokenDetails';
+import ExchangeRates from './ExchangeRates';
 
 import mocks from '../../__mocks/Slate/wallets.http.js';
 import wsmocks from '../../__mocks/Slate/websockets/wallets.ws.js';
@@ -45,16 +46,7 @@ export default class TokenService extends Service {
 
   getExchangeRates() {
     return this.get('rates')
-      .then(body => body.data);
-  }
-
-  watchExchangeRates() {
-    return this.send('/v1/assets/rates/latest', 'subscribe');
-  }
-
-  onExchangeRatesUpdate(callback) {
-    return this.on('/v1/assets/rates/latest', 'update')
-      .then(callback);
+      .then(body => new ExchangeRates(body.data));
   }
 }
 
