@@ -4,9 +4,9 @@
  */
 export default class TokenSummary {
   constructor({ticker, name, precision, display_precision, token_type, identifier, 
-    image_url, thumbnail_url, date_added}) {
+    image_url, thumbnail_url, date_added, dolomite_token_id }) {
 
-    this.id = identifier;
+    this.id = dolomite_token_id;
     this.ticker = ticker;
     this.name = (name || {}).singular;
     this.namePlural = (name || {}).plural;
@@ -28,11 +28,21 @@ export default class TokenSummary {
   }
 }
 
-/*
- * Different types of tokens/coins
- */
 TokenSummary.Type = {
   ERC20: 'ERC20'
 }
 
+TokenSummary.SortType = {
+    ALPHABETICAL: 'ALPHABETICAL',
+    HIGHEST_HOLDINGS: 'HIGHEST_HOLDINGS',
+    LOWEST_HOLDINGS: 'LOWEST_HOLDINGS',
+    HIGHEST_MARKET_CAP: 'HIGHEST_MARKET_CAP',
+    LOWEST_MARKET_CAP: 'LOWEST_MARKET_CAP',
+    HIGHEST_PRICE: 'HIGHEST_PRICE',
+    LOWEST_PRICE: 'LOWEST_PRICE',
+    BIGGEST_GAINER: 'BIGGEST_GAINER',
+    BIGGEST_LOSER: 'BIGGEST_LOSER',
+}
+
 TokenSummary.Types = Object.values(TokenSummary.Type);
+TokenSummary.SortTypes = Object.values(TokenSummary.SortType);
