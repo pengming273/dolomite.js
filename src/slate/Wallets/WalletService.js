@@ -21,6 +21,9 @@ export default class WalletService extends Service {
       graph: {
         get: '/v1/wallets/:address/historical-values'
       },
+      tokenGraph: {
+        get: '/v1/assets/:token/global-average'
+      }
     };
 
     super(url, websocket, routes, mocks, wsmocks);
@@ -42,6 +45,11 @@ export default class WalletService extends Service {
   getPortfolioGraph(address, period = Portfolio.Period.ONE_DAY) {
     return this.get('graph', { address, period })
       .then(body => new PortfolioGraph({ period, ...body.data }));
+  }
+
+  getTokenGraph(token, period = Portfolio.Period.ONE_DAY) {
+      return this.get('tokenGraph', { token, period })
+          .then(body => new PortfolioGraph({ period, ...body.data }));
   }
 
   watch(address) {
