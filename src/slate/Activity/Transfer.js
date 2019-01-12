@@ -8,23 +8,25 @@ const toSide = (_from, _to, owner) => {
 }
 
 export default class Transfer {
-  constructor({ transaction_id, transaction_hash, primary_wallet_address, secondary_wallet_address, dolomite_token_id, 
-    timestamp, block_height, transfer_type, transaction_cost_eth,transaction_cost_fiat, 
-    transfer_amount_token, transfer_amount_eth, transfer_amount_fiat, token_summary}, ownerAddress) {
+  constructor({ dolomite_token_id, token_summary, primary_wallet_address, event_type, transaction_cost_crypto, 
+    transaction_cost_value, transfer_amount_token, is_transaction_successful, dolomite_transaction_id, ethereum_log_index, 
+    transaction_hash, timestamp, block_height, secondary_wallet_address, transfer_amount_value, is_contract_address }, ownerAddress) {
 
-    this.id = transaction_id;
+    this.id = dolomite_transaction_id;
     this.transactionHash = transaction_hash;
     this.fromAddress = primary_wallet_address;
     this.toAddress = secondary_wallet_address;
     this.side = toSide(this.fromAddress, this.toAddress, ownerAddress);
     this.timestamp = new Date(parseInt(timestamp));
     this.block = block_height;
-    this.type = transfer_type;
-    this.fee = new BigNumber(transaction_cost_eth);
-    this.feeFiat = new BigNumber(transaction_cost_fiat);
+    this.type = event_type;
+    this.fee = new BigNumber(transaction_cost_crypto);
+    this.feeFiat = new BigNumber(transaction_cost_value);
     this.value = new BigNumber(transfer_amount_token);
-    this.valueETH = new BigNumber(transfer_amount_eth);
-    this.valueFiat = new BigNumber(transfer_amount_fiat);
+    this.valueFiat = new BigNumber(transfer_amount_value);
+    this.isSuccessful = is_transaction_successful;
+    this.ethereumLogIndex = ethereum_log_index;
+    this.isContractAddress = is_contract_address
     this.tokenId = dolomite_token_id;
     this.token = new TokenSummary(token_summary);
   }
@@ -35,11 +37,17 @@ export default class Transfer {
 }
 
 Transfer.Type = {
-  TOKEN: 'TOKEN',
-  ETHER: 'ETHER',
+  ETHER: 'ETHER-TRANSFER',
+  CONTRACT: 'CONTRACT-CALLED',
+  CONTRACT_CREATED: 'CONTRACT-CREATED',
+  TOKEN: 'TOKEN-TRANSFER',
+  TOKEN_APPROVAL: 'TOKEN-APPROVAL',
+  TOKEN_APPROVAL_RESET: 'TOKEN-APPROVAL-RESET',
   WETH_DEPOSIT: 'WETH-DEPOSIT',
   WETH_WITHDRAWAL: 'WETH-WITHDRAWAL',
-  CONTRACT: 'CONTRACT',
+  BLOCK_MINED: 'BLOCK-MINED',
+  UNCLE_BLOCK_MINED: 'UNCLE-MINED',
+  TRANSACTION_CANCELLED: 'TRANSACTION-CANCELLED'
 };
 
 Transfer.Side = {
