@@ -8,46 +8,46 @@ const asString = (o, grab) => (!o || typeof o === 'string' || o instanceof Strin
 
 export default class ActivityService extends Service {
   constructor(url, websocket) {
-	const routes = {
-	  transfers: {
-		get: '/v1/wallets/:address/transfers'
-	  },
-	  tokenTransfers: {
-		  get: '/v1/wallets/:address/transfers/:token'
-	  }
-	};
-
-	super(url, websocket, routes, mocks, wsmocks);
+    const routes = {
+      transfers: {
+        get: '/v1/wallets/:address/events'
+      },
+      tokenTransfers: {
+        get: '/v1/wallets/:address/transfers/:token'
+      }
+    };
+  
+    super(url, websocket, routes, mocks, wsmocks);
   }
 
   getTransfers(address, options = {}) {    
-	const token = asString(options.token, (t) => t.contractAddress || t.ticker);
+    const token = asString(options.token, (t) => t.contractAddress || t.ticker);
 
-	return this.pageable('transfers')
-	  .build(data => Transfer.build(data, address))
-	  .get(options, { address, token });
+    return this.pageable('transfers')
+      .build(data => Transfer.build(data, address))
+      .get(options, { address, token });
   }
 
-    getTokenTransfers(address, options = {}) {
-        const token = asString(options.token, (t) => t.contractAddress || t.ticker);
+  getTokenTransfers(address, options = {}) {
+    const token = asString(options.token, (t) => t.contractAddress || t.ticker);
 
-        return this.pageable('tokenTransfers')
-            .build(data => Transfer.build(data, address))
-            .get(options, { address, token });
-    }
+    return this.pageable('tokenTransfers')
+      .build(data => Transfer.build(data, address))
+      .get(options, { address, token });
+  }
 
   watchTransfers(address) {
-	this.watchedTransferAddress = address;
+    this.watchedTransferAddress = address;
 
-	return this.send('/v1/wallets/-address-/transfers', 'subscribe', {
-	  address: address
-	});
+    return this.send('/v1/wallets/-address-/events', 'subscribe', {
+      address: address
+    });
   }
 
   onTransferUpdate(callback) {
-	this.on('/v1/wallets/-address-/transfers', 'update')
-	  .build(data => Transfer.build(data, this.watchedTransferAddress))
-	  .then(callback);
+    this.on('/v1/wallets/-address-/events', 'update')
+      .build(data => Transfer.build(data, this.watchedTransferAddress))
+      .then(callback);
   }
 }
 
