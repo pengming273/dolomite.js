@@ -157,9 +157,6 @@ export default class Service {
    * POST Request
    */
   post(resource, params = {}, headers = {}) {
-    console.log('\n\n\n\nPOST>>>>>>>>')
-    console.log(JSON.stringify(params));
-    console.log('>>>>>>>>>>>>>>>>>>>');
     return this.requestRoute('post', resource, params, headers);
   }
 

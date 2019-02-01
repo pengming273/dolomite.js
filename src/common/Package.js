@@ -38,6 +38,10 @@ export default class Package {
       });
   }
 
+  onReconnect(callback) {
+    this.wsManager && this.wsManager.onReconnect(callback);
+  }
+
   get isConnected() {
     return this.wsManager ? this.wsManager.isConnected() : false;
   }
