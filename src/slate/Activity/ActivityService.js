@@ -13,7 +13,7 @@ export default class ActivityService extends Service {
         get: '/v1/wallets/:address/events'
       },
       tokenTransfers: {
-        get: '/v1/wallets/:address/transfers/:token'
+        get: '/v1/wallets/:address/events/:token'
       }
     };
   

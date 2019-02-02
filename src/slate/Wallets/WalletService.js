@@ -22,7 +22,7 @@ export default class WalletService extends Service {
         get: '/v1/wallets/:address/historical-values'
       },
       tokenGraph: {
-        get: '/v1/assets/:token/global-average'
+        get: '/v1/assets/:token/global-average-series'
       }
     };
 
