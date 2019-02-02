@@ -45,7 +45,7 @@ export default class ActivityService extends Service {
   }
 
   onTransferUpdate(callback) {
-    this.on('/v1/wallets/-address-/events', 'update')
+    this.on('/v1/wallets/-address-/events', 'insert')
       .build(data => Transfer.build(data, this.watchedTransferAddress))
       .then(callback);
   }

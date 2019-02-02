@@ -14,10 +14,27 @@ export default class WSConnection {
 
     this.stream.onmessage = (message) => {
       const event = JSON.parse(message.data);
-
       const { route, action, data } = event;
       this.trigger(route, action, data);
     };
+
+    this.stream.onclose = () => {
+      console.log('Disconnected to webscoket')
+      this.establish()
+        .then(() => {
+          console.log('Reconnected to webscoket');
+          const callbacks = this.subscribers['reconnect'] || [];
+          callbacks.forEach(cb => { try { cb() } catch (e) { } })
+        })
+        .catch((e) => {
+          console.error(e)
+          console.log('Failed to reconnect to websocket')
+        })
+    }
+
+    if (!this.pingInterval) this.pingInterval = setInterval(() => {
+      this.stream && this.stream.send(JSON.stringify({ action: 'ping' }))
+    }, 15000);
   }
 
   trigger(route, action, data) {
@@ -97,6 +114,15 @@ export default class WSConnection {
     if (!this.subscribers[route][action]) 
       this.subscribers[route][action] = [];
     this.subscribers[route][action].push(callback);
+  }
+
+  /*
+   * Register callback for reconnection
+   */
+  onReconnect(callback) {
+    const key = 'reconnect';
+    if (!this.subscribers[key]) this.subscribers[key] = [];
+    this.subscribers[key].push(callback);
   }
 
   static get none() {

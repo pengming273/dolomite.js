@@ -25,6 +25,10 @@ export default class WSManager {
     })
   }
 
+  onReconnect(callback) {
+    this.connection.onReconnect(callback);
+  }
+
   subscribe(route, action, callback) {
     this.connection.subscribe(route, action, callback);
   }
