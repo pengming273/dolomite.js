@@ -1,24 +1,24 @@
 import Service from '../../common/Service';
 import Transfer from './Transfer';
 
-import mocks from '../../__mocks/Slate/activity.http.js';
-import wsmocks from '../../__mocks/Slate/websockets/activity.ws.js';
-
 const asString = (o, grab) => (!o || typeof o === 'string' || o instanceof String) ? o : grab(o);
 
 export default class ActivityService extends Service {
-  constructor(url, websocket) {
-    const routes = {
-      transfers: {
-        get: '/v1/wallets/:address/events'
-      },
-      tokenTransfers: {
-        get: '/v1/wallets/:address/events/:token'
-      }
-    };
-  
-    super(url, websocket, routes, mocks, wsmocks);
-  }
+
+  static routes = {
+    transfers: {
+      get: '/v1/wallets/:address/events'
+    },
+    tokenTransfers: {
+      get: '/v1/wallets/:address/events/:token'
+    }
+  };
+
+  static exports = {
+    Transfer
+  };
+
+  /////////////////////////
 
   getTransfers(address, options = {}) {    
     const token = asString(options.token, (t) => t.contractAddress || t.ticker);
@@ -49,8 +49,4 @@ export default class ActivityService extends Service {
       .build(data => Transfer.build(data, this.watchedTransferAddress))
       .then(callback);
   }
-}
-
-ActivityService.exports = {
-  Transfer
 }

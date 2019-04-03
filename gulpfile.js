@@ -5,6 +5,11 @@ var gulp = require('gulp'),
   watch = require('gulp-watch'),
   merge = require('merge-stream');
 
+var doBabel = () => babel({ 
+  presets: ['@babel/preset-env'],
+  plugins: ['@babel/plugin-proposal-class-properties']
+});
+
 var SRC_PATH = './src',
   LIB_PATH = './lib_dev',
   LIB_SRC_PATH = './lib_dev/src',
@@ -26,17 +31,17 @@ gulp.task('clear_lib', function(cb) {
 
 gulp.task('release', [ 'clear_lib' ], function() {
   return gulp.src([SRC_PATH + '/**/*.js'])
-    .pipe(babel({ blacklist: [ 'useStrict' ] }))
+    .pipe(doBabel())
     .pipe(gulp.dest(LIB_SRC_RELEASE_PATH));
 });
 
 gulp.task('build', [ 'clear_lib_dev' ], function() {
   const js = gulp.src([SRC_PATH + '/**/*.js'])
-    .pipe(babel({ blacklist: [ 'useStrict' ] }))
+    .pipe(doBabel())
     .pipe(gulp.dest(LIB_SRC_PATH));
 
   const tests = gulp.src([TEST_PATH + '/**/*.js'])
-    .pipe(babel({ blacklist: [ 'useStrict' ] }))
+    .pipe(doBabel())
     .pipe(gulp.dest(LIB_TEST_PATH));
 
   return merge(js, tests);
@@ -77,11 +82,11 @@ const watchOutput = (task, showsInitial) => task
 // Development Server (Watches changes in js files and builds them to ./lib)
 gulp.task('watch', function () {
   const js = watchOutput(watch(SRC_PATH + '/**/*.js'), true)
-    .pipe(babel({ blacklist: [ 'useStrict' ] }))
+    .pipe(doBabel())
     .pipe(gulp.dest(LIB_SRC_PATH));
 
   const tests = watchOutput(watch(TEST_PATH + '/**/*.js'), false)
-    .pipe(babel({ blacklist: [ 'useStrict' ] }))
+    .pipe(doBabel())
     .pipe(gulp.dest(LIB_TEST_PATH));
 
   return merge(js, tests);

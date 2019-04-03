@@ -9,25 +9,20 @@ export default class Package {
 
     Object.keys(services).forEach(name => { 
       const ServiceType = services[name];
-      this[name] = new ServiceType(url, () => this.wsManager);
+      this[name] = new ServiceType(url, () => this.wsManager, ServiceType.routes);
     });
 
     this.serviceTypes = Object.keys(services).map(name => services[name]);
     this.services = Object.keys(services).map(name => this[name]);
   }
 
-  configure({ apiKey, mockDelay, shouldMock }) {
-    if (apiKey) {
-      this.services.forEach(service => service.configure(apiKey));
-    } else if (mockDelay != null || shouldMock != null) {
-      this.services.forEach(service => service.configureOptions({ mockDelay, shouldMock }));
-    }
+  configure({ apiKey }) {
+    this.services.forEach(service => service.configure(apiKey));
   }
 
-  connectToWebsocket({ shouldMock } = {}) {
-    if (shouldMock) return this.mockConnectionToWebsocket();
-
+  connectToWebsocket() {
     const connection = new WSConnection(this.wsUrl);
+    
     return connection.establish()
       .then((data) => {
         this.wsManager.setConnection(connection);
@@ -44,10 +39,6 @@ export default class Package {
 
   get isConnected() {
     return this.wsManager ? this.wsManager.isConnected() : false;
-  }
-
-  async mockConnectionToWebsocket() {
-    this.wsManager.mock();
   }
 
   get exports() {

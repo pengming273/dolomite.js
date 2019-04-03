@@ -2,5 +2,5 @@
 /*
  * Exports Exchange at `dolomite/exchange` along with other classes ( { Balance } for example)
  */
-var exchange = require('../lib/Exchange/Exchange');
-require('../lib/common/util/exportPackage')(exports, exchange);
+var exchange = require('../lib/Exchange/Exchange').default;
+require('../lib/common/util/exportPackage').default(exports, exchange);
