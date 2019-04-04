@@ -5,8 +5,8 @@
 export default (registry, packageInstance) => {
   Object.defineProperty(registry, '__esModule', { value: true });
 
-  Object.keys(packageInstance.exports).forEach(function(exportName) {
-    registry[exportName] = packageInstance.exports[exportName];
+  Object.keys((packageInstance.exports || {})).forEach(function(exportName) {
+    registry[exportName] = (packageInstance.exports || {})[exportName];
   });
 
   registry['default'] = packageInstance;

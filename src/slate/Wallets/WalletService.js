@@ -6,28 +6,28 @@ import Holding from './Holding';
 import PortfolioGraph from './PortfolioGraph';
 import Period from './Period';
 
-import mocks from '../../__mocks/Slate/wallets.http.js';
-import wsmocks from '../../__mocks/Slate/websockets/wallets.ws.js';
-
 export default class WalletService extends Service {
-  constructor(url, websocket) {
-    const routes = {
-      portfolio: {
-        get: '/v1/wallets/:address/portfolio-info'
-      },
-      holdings: {
-        get: '/v1/wallets/:address/holding-info'
-      },
-      graph: {
-        get: '/v1/wallets/:address/historical-values'
-      },
-      tokenGraph: {
-        get: '/v1/assets/:token/global-average-series'
-      }
-    };
 
-    super(url, websocket, routes, mocks, wsmocks);
-  }
+  static routes = {
+    portfolio: {
+      get: '/v1/wallets/:address/portfolio-info'
+    },
+    holdings: {
+      get: '/v1/wallets/:address/holding-info'
+    },
+    graph: {
+      get: '/v1/wallets/:address/historical-values'
+    },
+    tokenGraph: {
+      get: '/v1/assets/:token/global-average-series'
+    }
+  };
+
+  static exports = {
+    Period
+  };
+
+  /////////////////////////
 
   getPortfolio(address) {
     return this.get('portfolio', { address })
@@ -35,9 +35,6 @@ export default class WalletService extends Service {
   }
 
   getHoldings(address, options) {
-    // return this.pageable('holdings')
-    //   .build(data => Holding.build(data))
-    //   .get({ address, options });
     return this.get('holdings', { address, options })
       .then(body => Holding.build(body.data));
   }
@@ -48,8 +45,8 @@ export default class WalletService extends Service {
   }
 
   getTokenGraph(token, period = Portfolio.Period.ONE_DAY) {
-      return this.get('tokenGraph', { token, period })
-          .then(body => new PortfolioGraph({ period, ...body.data }));
+    return this.get('tokenGraph', { token, period })
+      .then(body => new PortfolioGraph({ period, ...body.data }));
   }
 
   watch(address) {
@@ -82,7 +79,3 @@ export default class WalletService extends Service {
     this.holdingsWS.subscribe(callback);
   }
 }
-
-WalletService.exports = {
-  Period
-};

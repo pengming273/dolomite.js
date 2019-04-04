@@ -7,27 +7,33 @@ export default class Package {
     this.wsUrl = websocketUrl;
     this.wsManager = new WSManager();
 
-    Object.keys(services).forEach(name => { 
-      const ServiceType = services[name];
-      this[name] = new ServiceType(url, () => this.wsManager);
+    this.services = this.setupServicesFor((k, v) => this[k] = v, services);
+    this.serviceTypes = Object.keys(services).map(name => services[name]);
+  }
+
+  setupServicesFor(setParent, services) {
+    let allServices = [];
+
+    Object.keys(services).forEach(serviceName => {
+      const ServiceType = services[serviceName];
+      const service = new ServiceType(this.url, () => this.wsManager, ServiceType.routes);
+      
+      const subServices = ServiceType.services || [];
+      this.setupServicesFor((k, v) => service[k] = v, subServices).forEach(s => allServices.push(s));
+      setParent(serviceName, service);
+      allServices.push(service);
     });
 
-    this.serviceTypes = Object.keys(services).map(name => services[name]);
-    this.services = Object.keys(services).map(name => this[name]);
+    return allServices;
   }
 
-  configure({ apiKey, mockDelay, shouldMock }) {
-    if (apiKey) {
-      this.services.forEach(service => service.configure(apiKey));
-    } else if (mockDelay != null || shouldMock != null) {
-      this.services.forEach(service => service.configureOptions({ mockDelay, shouldMock }));
-    }
+  configure({ apiKey }) {
+    this.services.forEach(service => service.configure(apiKey));
   }
 
-  connectToWebsocket({ shouldMock } = {}) {
-    if (shouldMock) return this.mockConnectionToWebsocket();
-
+  connectToWebsocket() {
     const connection = new WSConnection(this.wsUrl);
+    
     return connection.establish()
       .then((data) => {
         this.wsManager.setConnection(connection);
@@ -44,10 +50,6 @@ export default class Package {
 
   get isConnected() {
     return this.wsManager ? this.wsManager.isConnected() : false;
-  }
-
-  async mockConnectionToWebsocket() {
-    this.wsManager.mock();
   }
 
   get exports() {

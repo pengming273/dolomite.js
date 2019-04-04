@@ -1,5 +1,4 @@
-import WSConnection from './WSMockedConnection';
-import WSMockedConnection from './WSMockedConnection';
+import WSConnection from './WSConnection';
 
 /*
  * 
@@ -8,21 +7,6 @@ export default class WSManager {
   constructor() {
     this.mocks = {};
     this.connection = WSConnection.none;
-  }
-
-  mock() {
-    this.setConnection(new WSMockedConnection({
-      getMocks: () => this.mocks
-    }));
-  }
-
-  registerMocks(mocks) {
-    Object.keys(mocks).forEach(route => {
-      if (!this.mocks[route]) this.mocks[route] = mocks[route];
-      else Object.keys(mocks[route]).forEach(action => {
-        this.mocks[route][action] = mocks[route][action];
-      });
-    })
   }
 
   onReconnect(callback) {

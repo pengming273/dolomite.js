@@ -1,4 +1,3 @@
-import fetchMock from 'fetch-mock';
 import omit from 'object.omit';
 import Pageable from './Pageable';
 import nativeFetch from 'node-fetch';
@@ -36,53 +35,36 @@ export class GenericError extends ServiceError {
 
 /*
  * Super class for all services that provides request
- * mocking, api key handling, fetch requests with helper
+ * api key handling, fetch requests with helper
  * functions (get, post, etc.) and routing
  */
 export default class Service {
-  constructor(url, getWebsocket, routes = {}, mocks = {}, wsMocks = {}) {
+  constructor(url, getWebsocket, routes = {}) {
     this.url = url;
     this.apiKey = null;
-
     this.routes = routes;
-    this.mocks = mocks;
-    this.wsMocks = wsMocks;
+    this.fetch = getNativeFetch();
     
     if (!getWebsocket) {
       const wsManager = new WSManager();
       getWebsocket = (() => wsManager);
     }
     
-    getWebsocket().registerMocks(wsMocks);
-    
     this.getWebsocket = getWebsocket;
-    this.configureOptions();
   }
 
   /*
-   * Configure the service with an API key. Will remove
-   * mock requests and the API key will be added to the
-   * header of every request
+   * Configure the service with an API key.
    */
   configure(apiKey) {
     this.apiKey = apiKey;
-    this.fetch = getNativeFetch();
-    this.isMocking = false;
   }
 
   /*
-   * Configure the options for the service
+   * 
    */
-  configureOptions(options = {}) {
-    this.mockDelay = options.mockDelay || 0;
-    this.shouldMock = options.shouldMock === undefined ? true : options.shouldMock;
-    this.isMocking = this.shouldMock;
-
-    if (this.shouldMock) {
-      this.mockRoutes();
-    } else {
-      this.fetch = getNativeFetch();
-    }
+  login(cb) {
+    
   }
 
   /*
@@ -174,27 +156,16 @@ export default class Service {
     return this.requestRoute('delete', resource, params, headers);
   }
 
+  /*
+   * POST request to the route at the `prepare` key in a route
+   */
+  prepare(resource, params = {}, headers = {}) {
+    const route = this.getRoute('prepare', resource, params);
+    return this.request('post', route.url, route.params, headers);
+  }
+
   ///////////////////////////
   // Helper functions
-
-  mockRoutes() {
-    this.fetch = fetchMock.sandbox();
-    this.fetch.config.fallbackToNetwork = true;
-
-    const delay = (data) => () => new Promise((res, rej) => setTimeout(() => res(data), this.mockDelay));
-
-    Object.keys(this.routes).forEach(resourceName => {
-      const resource = this.routes[resourceName];
-      Object.keys(resource).forEach(verb => {
-        try {
-          const relativeRoute = resource[verb];
-          const fullRoute = this.getRoute(verb, resourceName).url;
-          const mockData = this.mocks[relativeRoute][verb];
-          this.fetch.mock('express:' + fullRoute, delay(mockData), {method: verb});
-        } catch(e) { }
-      })
-    })
-  }
 
   getRoute(verb, resource, params = null) {
     let route = this.routes[resource][verb];
@@ -227,9 +198,11 @@ export default class Service {
   }
 
   request(verb, route, params = {}, additionalHeaders = {}) {
+    if (!this.apiKey) return Promise.reject('Needs configuration: No API key provided');
+
     let url = route;
 
-    const isUsingUrlParams = verb == 'get' && !this.isMocking;
+    const isUsingUrlParams = verb == 'get';
     if (isUsingUrlParams) {
       let builder = new URL(route);
       builder.search = new URLSearchParams(params);

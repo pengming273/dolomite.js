@@ -26,6 +26,8 @@ const Errors = {
 export default class Pageable extends Array {
   constructor({ paging_metadata, data, global_objects }, buildCallbackOrRequest = () => []) {
     super();
+    paging_metadata = paging_metadata || {};
+    
     this.cursor = paging_metadata.cursor;
     this.pageNumber = paging_metadata.page_number;
     this.pageSize = paging_metadata.page_size;
