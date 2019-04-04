@@ -1,7 +1,7 @@
 {
   "name": "dolomite",
-  "version": "0.0.10",
-  "description": "Javascript library for interacting with the Dolomite Exchange & Slate API",
+  "version": "0.1.0",
+  "description": "Javascript library for interacting with the Dolomite Exchange & Slate APIs",
   "main": "./lib/index.js",
   "scripts": {
     "test": "gulp build && jest --watch ./lib_dev/__tests",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/zrubenst/dolomite.js#readme",
   "dependencies": {
+    "@babel/polyfill": "^7.4.3",
     "datejs": "^1.0.0-rc3",
     "node-fetch": "^2.2.0",
     "object.omit": "^3.0.0",

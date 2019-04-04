@@ -1,3 +1,6 @@
+
+const ZERO_RAW = { amount: 0, currency: { precision: 0, display_precision: 0 }};
+
 /*
  * Used for numbers provided by the API in the format:
  * {
@@ -10,22 +13,18 @@
  * }
  */
 export default class BigNumber {
-  constructor(raw) {
-    if (raw) {
-      const amount = raw.amount;
-      const currency = raw.currency;
-      
-      this.raw = { amount, currency };
-      this.value = amount;
-      this.currency = {
-        ticker: currency.ticker,
-        precision: currency.precision,
-        displayPrecision: currency.display_precision
-      };
+  constructor(input) {
+    let { amount, currency } = input || ZERO_RAW;
 
-      this.precision = this.currency.precision;
-      this.amount = this.value / Math.pow(10, this.precision);
-    }
+    this.raw = { amount, currency };
+    this.value = amount;
+    this.currency = {
+      ticker: currency.ticker,
+      precision: currency.precision,
+      displayPrecision: currency.display_precision
+    };
+    this.precision = this.currency.precision;
+    this.amount = this.value / Math.pow(10, this.precision);
   }
 
   get dup() {
@@ -35,6 +34,13 @@ export default class BigNumber {
   modify(callback) {
     this.value = callback(this.value);
     this.amount = this.value / Math.pow(10, this.precision);
+    return this;
+  }
+
+  calc(callback) {
+    const dup = this.dup;
+    dup.modify(callback);
+    return dup;
   }
 
   static build(value, precision, ticker = null) {

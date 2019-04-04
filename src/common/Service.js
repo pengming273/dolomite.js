@@ -61,6 +61,13 @@ export default class Service {
   }
 
   /*
+   * 
+   */
+  login(cb) {
+    
+  }
+
+  /*
    * Construct a PageableRequest object without having to import Pageable
    *
    * Usage:
@@ -147,6 +154,14 @@ export default class Service {
    */
   delete(resource, params = {}, headers = {}) {
     return this.requestRoute('delete', resource, params, headers);
+  }
+
+  /*
+   * POST request to the route at the `prepare` key in a route
+   */
+  prepare(resource, params = {}, headers = {}) {
+    const route = this.getRoute('prepare', resource, params);
+    return this.request('post', route.url, route.params, headers);
   }
 
   ///////////////////////////
