@@ -8,6 +8,23 @@ Javascript library for interacting with the Dolomite Exchange API and Slate API
 npm install dolomite --save
 ```
 
+## Getting Started
+
+```
+// import packages
+import exchange from 'dolomite/exchange';
+import slate from 'dolomite/slate';
+
+// configure them with your API keys
+exchange.configure({ apiKey: 'EXCHANGE_API_KEY' });
+slate.configure({ apiKey: 'SLATE_API_KEY' });
+
+// make requests to the API
+exchange.markets.getAll().then(markets => console.log(markets));
+slate.wallets.getHoldings('0x0000000000000000000000000000000000000000')
+  .then(holdings => console.log(holdings));
+```
+
 ## Development
 
 Clone the repository and install `npm`, then install the dependencies
