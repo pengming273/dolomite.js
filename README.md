@@ -10,7 +10,7 @@ npm install dolomite --save
 
 ## Getting Started
 
-```
+```javascript
 // import packages
 import exchange from 'dolomite/exchange';
 import slate from 'dolomite/slate';
