@@ -1,4 +1,4 @@
-import Service from '../../../common/Service';
+import AuthService from '../../../common/AuthService';
 
 import Account from '../Account';
 import AuthToken from './AuthToken';
@@ -8,7 +8,7 @@ import PrepareMessage from './PrepareMessage';
 import CountryRegions from './res/CountryRegions';
 import PhoneCountryCodes from './res/PhoneCountryCodes';
 
-export default class VerificationService extends Service {
+export default class VerificationService extends AuthService {
 
   static routes = {
     verifyPhone: {
@@ -24,6 +24,10 @@ export default class VerificationService extends Service {
     tier3: {
       post: '/v1/accounts/:account_id/upgrade/tier3',
       prepare: '/v1/accounts/:account_id/upgrade/tier3/prepare/:address'
+    },
+    tier4: {
+      post: '/v1/accounts/:account_id/upgrade/tier4',
+      prepare: '/v1/accounts/:account_id/upgrade/tier4/prepare/:address'
     },
     resendEmail: {
       post: '/v1/accounts/:account_id/verify-email/resend'
@@ -50,7 +54,7 @@ export default class VerificationService extends Service {
       .then(body => new PrepareMessage(body.data));
   }
 
-  upgradeToTier2({ address, accountId, phoneNumber, extensionNumber, verificationCode, phoneVerificationSignature,
+  upgradeToTier2({ accountId, phoneNumber, extensionNumber, verificationCode, phoneVerificationSignature,
     streetAddress, secondaryStreetAddress, city, zip, stateCode, countryCode, signature, prepareId }) {
 
     return this.post('tier2', {
@@ -78,11 +82,35 @@ export default class VerificationService extends Service {
       .then(body => new PrepareMessage(body.data));
   }
 
-  upgradeToTier3({ address, accountId, ssn, signature, prepareId }) {
+  upgradeToTier3({ accountId, ssn, signature, prepareId }) {
     return this.post('tier3', {
       account_id: accountId,
       social_security_number: ssn,
       auth_signature: signature,
+      prepare_id: prepareId,
+    });
+  }
+
+  // ----------------------------------------------
+  // Tier 3 Upgrade
+
+  prepareUpgradeToTier4({ address, accountId }) {
+    return this.prepare('tier4', { address, account_id: accountId })
+      .then(body => new PrepareMessage(body.data));
+  }
+
+  /*
+   * Unlike other routes that require a user signature, this one needs it "flattened",
+   * as in not as { v, r, s } but as a single hexadecimal (0x...). This is because this
+   * route uses multipart form data, and that does not support nested params
+   */
+  upgradeToTier4({ accountId, plaidToken, primaryImage, secondaryImage, flatSignature, prepareId }) {
+    return this.formDataRequest('post', 'tier4', {
+      account_id: accountId,
+      plaid_public_token: plaidToken,
+      primary_identification_document: primaryImage,
+      secondary_identification_document: secondaryImage,
+      flattened_auth_signature: flatSignature,
       prepare_id: prepareId,
     });
   }
@@ -125,13 +153,11 @@ export default class VerificationService extends Service {
   // ----------------------------------------------
   // Resend Email
 
-  resendVerificationEmail({ address, timestamp, signature, accountId }) {
-    return this.post('resendEmail', { 
+  resendVerificationEmail({ address, /*timestamp, signature,*/ accountId }) {
+    return this.requiresAuth.post('resendEmail', {
       wallet_address: address,
-      timestamp: timestamp,
-      auth_signature: signature,
       account_id: accountId
-    })
+    });
   }
 
 }

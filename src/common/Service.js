@@ -61,13 +61,6 @@ export default class Service {
   }
 
   /*
-   * 
-   */
-  login(cb) {
-    
-  }
-
-  /*
    * Construct a PageableRequest object without having to import Pageable
    *
    * Usage:
@@ -197,6 +190,26 @@ export default class Service {
     return url;
   }
 
+  formDataRequest(verb, resource, fieldsOrParams = {}, additionalHeaders = {}) {
+    if (!this.apiKey) return Promise.reject('Needs configuration: No API key provided');
+
+    const { url, params: fields } = this.getRoute(verb, resource, fieldsOrParams);
+    
+    let bodyData = new FormData();
+    Object.entries(fields).forEach(([field, value]) => bodyData.append(field, value));
+
+    return this.makeRequest(url, {
+      method: verb,
+      body: bodyData,
+      headers: {
+        /* FormData handles Accept/Content-Type headers */
+        'Access-Control-Allow-Origin':'*',
+        'X_DOLOMITE_API_KEY': this.apiKey,
+        ...additionalHeaders
+      }
+    });
+  }
+
   request(verb, route, params = {}, additionalHeaders = {}) {
     if (!this.apiKey) return Promise.reject('Needs configuration: No API key provided');
 
@@ -209,7 +222,7 @@ export default class Service {
       url = route + builder.search;
     }
 
-    const fetchOptions = {
+    return this.makeRequest(url, {
       method: verb,
       body: isUsingUrlParams ? null : JSON.stringify(params),
       headers: {
@@ -219,8 +232,10 @@ export default class Service {
        'X_DOLOMITE_API_KEY': this.apiKey,
        ...additionalHeaders
       }
-    };
+    });
+  }
 
+  makeRequest(url, fetchOptions) {
     try {
       return this.fetch(url, fetchOptions)
         .then((response) => {

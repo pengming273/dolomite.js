@@ -13,6 +13,9 @@ export default class AccountService extends Service {
       post: '/v1/accounts/create',
       prepare: '/v1/accounts/create/prepare/:address',
     },
+    login: {
+      post: '/v1/accounts/:account_id/login'
+    },
   };
 
   static exports = {
@@ -39,8 +42,13 @@ export default class AccountService extends Service {
     return data;
   }
 
-  login(accountId) {
-    // TODO: .then(body => new AuthToken(body.data));
+  login({ accountId, address, signature, timestamp }) {
+    return this.post('login', {
+      account_id: accountId,
+      wallet_address: address,
+      auth_signature: signature,
+      timestamp: timestamp
+    }).then(body => new AuthToken(body.data));
   }
 
   // ----------------------------------------------

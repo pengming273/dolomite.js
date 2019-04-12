@@ -27,8 +27,13 @@ export default class Package {
     return allServices;
   }
 
-  configure({ apiKey }) {
-    this.services.forEach(service => service.configure(apiKey));
+  configure({ apiKey, getAuthToken }) {
+    this.getAuthToken = getAuthToken || (() => Promise.reject('getAuthToken not defined on package'));
+
+    this.services.forEach(service => {
+      service.configure(apiKey);
+      service.getAuthToken = this.getAuthToken;
+    });
   }
 
   connectToWebsocket() {
