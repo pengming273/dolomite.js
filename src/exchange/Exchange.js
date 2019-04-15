@@ -53,6 +53,10 @@ class Exchange extends Package {
     return this.exchange.getInfo();
   }
 
+  isUnsupportedRegion() {
+    return this.exchange.isUnsupportedRegion();
+  }
+
   getRates() {
     return this.exchange.getRates();
   }

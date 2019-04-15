@@ -18,6 +18,9 @@ export default class ExchangeService extends Service {
     },
     gasPrice: {
       get: '/v1/estimate-gas'
+    },
+    unsupportedRegion: {
+      get: '/v1/kyc/is-unsupported-region'
     }
   };
 
@@ -31,6 +34,10 @@ export default class ExchangeService extends Service {
   getInfo() {
     return this.get('info')
       .then(body => new ExchangeInfo(body.data));
+  }
+
+  isUnsupportedRegion() {
+    return this.get('unsupportedRegion').then(body => body.data);
   }
 
   // ----------------------------------------------
