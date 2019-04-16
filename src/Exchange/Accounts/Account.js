@@ -8,7 +8,7 @@ export default class Account {
     is_residence_in_supported_region, daily_used_trade_amount_usd, open_trade_amount_usd, 
     total_crypto_currency_amount_traded, total_crypto_currency_fees_paid, total_fiat_currency_amount_traded, 
     total_fiat_currency_fees_paid, upgrading_to_verification_tier_number, verification_tier_number, 
-    wallet_addresses }) {
+    wallet_addresses, account_gateway_status }) {
     
     this.id = dolomite_account_id;
     this.address = wallet_addresses[0];
