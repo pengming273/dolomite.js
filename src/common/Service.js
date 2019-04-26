@@ -196,7 +196,7 @@ export default class Service {
     const { url, params: fields } = this.getRoute(verb, resource, fieldsOrParams);
     
     let bodyData = new FormData();
-    Object.entries(fields).forEach(([field, value]) => bodyData.append(field, value));
+    Object.entries(fields).forEach(([field, value]) => value && bodyData.append(field, value));
 
     return this.makeRequest(url, {
       method: verb,

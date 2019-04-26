@@ -20,6 +20,7 @@ export default class Account {
     this.totalTradedCrypto = new BigNumber(total_crypto_currency_amount_traded);
     this.totalFeesPaidCrypto = new BigNumber(total_crypto_currency_fees_paid);
 
+    this.approvalStatus = account_gateway_status;
     this.tier = verification_tier_number;
     this.isVerified = verification_tier_number > 0;
     this.isUpgradingTier = !!upgrading_to_verification_tier_number;

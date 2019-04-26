@@ -35,6 +35,11 @@ export default class VerificationService extends AuthService {
     changeEmail: {
       post: '/v1/accounts/:account_id/change-email',
       prepare: '/v1/accounts/:account_id/change-email/prepare/:address',
+    },
+    missing: {
+      get: '/v1/accounts/:account_id/upgrade/missing-fields',
+      post: '/v1/accounts/:account_id/upgrade/missing-fields',
+      prepare: '/v1/accounts/:account_id/upgrade/missing-fields/prepare/:address'
     }
   };
 
@@ -46,6 +51,44 @@ export default class VerificationService extends AuthService {
 
   /////////////////////////
   
+  // ----------------------------------------------
+  // Account Repair
+
+  getMissingAccountInfo({ accountId }) {
+    return this.requiresAuth.get('missing', { account_id: accountId })
+      .then(body => body.data);
+  }
+
+  prepareRepairAccount({ address, accountId }) {
+    return this.prepare('missing', { address, account_id: accountId })
+      .then(body => new PrepareMessage(body.data));
+  }
+
+  repairAccount({ accountId, firstName, lastName, dateOfBirth, streetAddress, 
+    secondaryStreetAddress, city, zip, stateCode, countryCode, ssn, plaidToken, 
+    primaryImage, secondaryImage, proofOfAddress, flatSignature, prepareId }) {
+
+    return this.formDataRequest('post', 'missing', {
+      account_id: accountId,
+      first_name: firstName,
+      last_name: lastName,
+      date_of_birth: dateOfBirth,
+      primary_street_address: streetAddress,
+      secondary_street_address: secondaryStreetAddress,
+      city: city,
+      state_code: zip,
+      postal_code: stateCode,
+      country_code: countryCode,
+      social_security_number: ssn,
+      plaid_public_token: plaidToken,
+      primary_identification_document: primaryImage,
+      secondary_identification_document: secondaryImage,
+      proof_of_address_document: proofOfAddress,
+      flattened_auth_signature: flatSignature,
+      prepare_id: prepareId,
+    });
+  }
+
   // ----------------------------------------------
   // Tier 2 Upgrade
 
