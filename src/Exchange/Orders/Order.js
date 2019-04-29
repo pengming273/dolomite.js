@@ -10,7 +10,7 @@ export default class Order {
   constructor({ dolomite_order_id, order_hash, market, order_type, order_side, order_status,
     loopring_contract_address, loopring_delegate_address, fee_collecting_wallet_address,
     owner_address, auth_address, primary_amount, secondary_amount, usd_amount_at_creation,
-    amount_dealt_primary, amount_dealt_secondary, creation_timestamp, expiration_timestamp, fee_amount,
+    dealt_amount_primary, amount_dealt_secondary, creation_timestamp, expiration_timestamp, fee_amount,
     fee_usd_at_creation, fee_usd_average, exchange_more_than_amount,
     margin_split_percentage, ecdsa_signature, proof_of_work_nonce, primary_token, secondary_token,
     close_timestamp, usd_amount_at_close, usd_fee_at_creation, usd_fee_at_close}) {
@@ -30,7 +30,7 @@ export default class Order {
     this.status = order_status;
     this.amount = new BigNumber(primary_amount);
     this.volume = new BigNumber(secondary_amount);
-    this.dealtAmountPrimary = new BigNumber(amount_dealt_primary);
+    this.dealtAmountPrimary = new BigNumber(dealt_amount_primary);
     this.dealtAmountSecondary = new BigNumber(amount_dealt_secondary);
     this.fillPercent = toFillPercent(this.dealtAmountPrimary, this.amount);
     this.fiatPriceTotal = new BigNumber(usd_amount_at_creation);

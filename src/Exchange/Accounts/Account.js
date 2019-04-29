@@ -4,10 +4,10 @@ import BigNumber from '../../common/BigNumber';
  * Details of an account
  */
 export default class Account {
-  constructor({ daily_max_trade_amount_usd, dolomite_account_id, filled_trade_amount_usd,
+  constructor({ dolomite_account_id, filled_trade_amount_usd, current_verification_tier,
     is_residence_in_supported_region, daily_used_trade_amount_usd, open_trade_amount_usd, 
     total_crypto_currency_amount_traded, total_crypto_currency_fees_paid, total_fiat_currency_amount_traded, 
-    total_fiat_currency_fees_paid, upgrading_to_verification_tier_number, verification_tier_number, 
+    total_fiat_currency_fees_paid, upgrading_to_verification_tier_number, 
     wallet_addresses, account_gateway_status }) {
     
     this.id = dolomite_account_id;
@@ -19,6 +19,12 @@ export default class Account {
     this.totalFeesPaid = new BigNumber(total_fiat_currency_fees_paid);
     this.totalTradedCrypto = new BigNumber(total_crypto_currency_amount_traded);
     this.totalFeesPaidCrypto = new BigNumber(total_crypto_currency_fees_paid);
+
+    const { 
+        daily_max_trade_amount_usd, 
+        information_required,
+        verification_tier_number 
+    } = current_verification_tier;
 
     this.approvalStatus = account_gateway_status;
     this.tier = verification_tier_number;
