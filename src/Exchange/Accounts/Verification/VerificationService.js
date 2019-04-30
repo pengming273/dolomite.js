@@ -190,6 +190,11 @@ export default class VerificationService extends AuthService {
       email: email,
       auth_signature: signature,
       prepare_id: prepareId,
+
+      // TODO: remove these when backend fixes this route to remove
+      // deprecated required fields
+      wallet_address: '0x0000000000000000000000000000000000000000', 
+      timestamp: Date.now(),
     });
   }
 
