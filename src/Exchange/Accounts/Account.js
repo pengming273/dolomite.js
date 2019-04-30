@@ -7,7 +7,7 @@ export default class Account {
   constructor({ dolomite_account_id, filled_trade_amount_usd, current_verification_tier,
     is_residence_in_supported_region, daily_used_trade_amount_usd, open_trade_amount_usd, 
     total_crypto_currency_amount_traded, total_crypto_currency_fees_paid, total_fiat_currency_amount_traded, 
-    total_fiat_currency_fees_paid, upgrading_to_verification_tier_number, 
+    total_fiat_currency_fees_paid, upgrading_to_verification_tier_number, failed_upgrading_to_verification_tier_number,
     wallet_addresses, account_gateway_status }) {
     
     this.id = dolomite_account_id;
@@ -31,6 +31,8 @@ export default class Account {
     this.isVerified = verification_tier_number > 0;
     this.isUpgradingTier = !!upgrading_to_verification_tier_number;
     this.upgradingToTier = upgrading_to_verification_tier_number;
+    this.failedUpgradingToTier = failed_upgrading_to_verification_tier_number;
+    this.didFailUpgradingTier = !!failed_upgrading_to_verification_tier_number;
     this.dailyLimit = (new BigNumber(daily_max_trade_amount_usd)).amount;
     this.dailyUsage = (new BigNumber(daily_used_trade_amount_usd)).amount;
   }
