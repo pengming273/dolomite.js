@@ -34,14 +34,12 @@ export default class MarketService extends Service {
 
   onUpdate(callback) {
     this.on('/v1/markets', 'update')
-      .build(data => Market.build(data))
+      // .build(data => Market.build(data)) // TODO: Implement this correctly when updated
       .then(callback);
   }
 
-  /*
-   * TODO: hookup to actual websocket
-   */
   onUpdateAll(callback) {
+    // TODO: Use `onUpdate` when markets are sent down hydrated in the future
     if (!this.allMarketsWS) {
       this.allMarketsWS = new WSWrapper(() => this.getAll());
       this.onUpdate(market => this.allMarketsWS.trigger());

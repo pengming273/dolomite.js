@@ -2,40 +2,9 @@ import BigNumber from '../../common/BigNumber';
 import Token from '../Tokens/Token';
 
 /*
- * Balances for different tokens
- */
-export default class Balance {
-  constructor({ asset, token, balance }) {
-    this.balance = BigNumber.build(balance, asset.precision);
-    this.token = new Token(token);
-    this.asset = this.token;
-
-    // Deprecated
-    this.committed = BigNumber.build(0, 0);
-    this.allowance = BigNumber.build(0, 0);
-  }
-
-  static build(balancesAsJson) {
-    return balancesAsJson.map(balanceJson => new Balance(balanceJson));
-  }
-
-  static hydrate(balancesAsJson, globals) {
-    const tokens = globals.tokens || {};
-
-    const balancesWithTokens = balancesAsJson.map(balance => {
-      const token = tokens[balance.asset.ticker];
-      balance.token = token || balance.asset;
-      return balance;
-    });
-
-    return Balance.build(balancesWithTokens);
-  }
-}
-
-/*
  * Balances, Committed amount & Allowances for different tokens
  */
-export class BalanceInfo {
+export default class Balance {
   constructor({ asset, token, balance, committed, allowance }) {
     this.balance = new BigNumber(balance);
     this.committed = new BigNumber(committed);
@@ -49,7 +18,7 @@ export class BalanceInfo {
     const built = {};
 
     Object.keys(balancesAsMap).forEach((ticker) => {
-      built[ticker] = new BalanceInfo(balancesAsMap[ticker]);
+      built[ticker] = new Balance(balancesAsMap[ticker]);
     });
 
     return built;
@@ -66,6 +35,6 @@ export class BalanceInfo {
       };
     });
 
-    return BalanceInfo.build(hydrated);
+    return Balance.build(hydrated);
   }
 }

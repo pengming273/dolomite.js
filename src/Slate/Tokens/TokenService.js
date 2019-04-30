@@ -48,4 +48,14 @@ export default class TokenService extends Service {
     return this.get('rates')
       .then(body => new ExchangeRates(body.data));
   }
+
+  watchExchangeRates() {
+    return this.send('/v1/assets/rates/latest', 'subscribe');
+  }
+
+  onExchangeRatesUpdate(callback) {
+    this.on('/v1/assets/rates/latest', 'update')
+      .build(data => new ExchangeRates(data))
+      .then(callback);
+  }
 }
