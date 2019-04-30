@@ -9,8 +9,8 @@ const toSide = (_from, _to, owner) => {
 
 export default class Transfer {
   constructor({ dolomite_token_id, token_summary, primary_wallet_address, event_type, transaction_cost_crypto, 
-    transaction_cost_value, transfer_amount_token, is_transaction_successful, dolomite_transaction_id, ethereum_log_index, 
-    transaction_hash, timestamp, block_height, secondary_wallet_address, transfer_amount_value, is_contract_address }, ownerAddress) {
+    transaction_cost_value, transaction_amount_token, is_transaction_successful, dolomite_transaction_id, ethereum_log_index, 
+    transaction_hash, timestamp, block_height, secondary_wallet_address, transaction_amount_value, is_contract_address }, ownerAddress) {
 
     this.id = dolomite_transaction_id;
     this.transactionHash = transaction_hash;
@@ -22,8 +22,8 @@ export default class Transfer {
     this.type = event_type;
     this.fee = new BigNumber(transaction_cost_crypto);
     this.feeFiat = new BigNumber(transaction_cost_value);
-    this.value = new BigNumber(transfer_amount_token);
-    this.valueFiat = new BigNumber(transfer_amount_value);
+    this.value = new BigNumber(transaction_amount_token);
+    this.valueFiat = new BigNumber(transaction_amount_value);
     this.isSuccessful = is_transaction_successful;
     this.ethereumLogIndex = ethereum_log_index;
     this.isContractAddress = is_contract_address
