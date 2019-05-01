@@ -4,13 +4,13 @@ import BigNumber from '../../common/BigNumber';
  * Volume (Depth) of sell or buy orders at a price
  */
 export class OrderDepth {
-  constructor({ primary_amount, secondary_amount, amount_usd }) {
+  constructor({ primary_amount, secondary_amount, amount_usd, exchange_rate }) {
     this.quantity = new BigNumber(primary_amount);
     this.total = new BigNumber(secondary_amount);
     this.totalUsd = amount_usd && new BigNumber(amount_usd);
 
-    const price = this.total.amount / this.quantity.amount;
-    this.price = BigNumber.fromFloat(price);
+    // const price = this.total.amount / this.quantity.amount;
+    this.price = BigNumber.fromFloat(exchange_rate);
   }
 
   static build(depthArray) {
