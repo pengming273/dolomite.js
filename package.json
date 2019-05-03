@@ -33,14 +33,14 @@
     "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.4.3",
-    "babel-jest": "20.0.3",
+    "babel-jest": "^24.7.1",
     "del": "^1.1.1",
     "gulp": "^3.8.11",
     "gulp-babel": "^8.0.0-beta.2",
     "gulp-jest": "^4.0.2",
-    "gulp-watch": "^5.0.0",
-    "jest": "^20.0.4",
-    "jest-cli": "^23.1.0",
+    "gulp-watch": "^5.0.1",
+    "jest": "^24.7.1",
+    "jest-cli": "^24.7.1",
     "merge-stream": "^1.0.1"
   }
 }
