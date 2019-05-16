@@ -4,7 +4,9 @@ import Account from './Account';
 import AuthToken from './Verification/AuthToken';
 import SignatureData from './Verification/SignatureData';
 import PrepareMessage from './Verification/PrepareMessage';
+
 import VerificationService from './Verification/VerificationService';
+import GatewayService from './Gateway/GatewayService';
 
 export default class AccountService extends Service {
 
@@ -21,10 +23,12 @@ export default class AccountService extends Service {
   static exports = {
     Account,
     ...VerificationService.exports, // sub-services cannot export directly
+    ...GatewayService.exports,
   };
 
   static services = {
-    verification: VerificationService
+    verification: VerificationService,
+    gateway: GatewayService
   };
 
   /////////////////////////

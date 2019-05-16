@@ -22,6 +22,9 @@ export default class OrderService extends Service {
     },
     cancelOrders: {
       post: '/v1/orders/:dolomite_order_id_param/cancel'
+    },
+    prepareOrders: {
+      post: '/v1/orders/prepare'
     }
   };
 
@@ -35,6 +38,10 @@ export default class OrderService extends Service {
 
   // ----------------------------------------------
   // Order Management
+
+  prepareOrder(order) {
+    return this.post('prepareOrders', order);
+  }
 
   createOrder(order) {
     return this.post('orders', order)

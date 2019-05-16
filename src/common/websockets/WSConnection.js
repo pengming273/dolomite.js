@@ -27,8 +27,7 @@ export default class WSConnection {
           callbacks.forEach(cb => { try { cb() } catch (e) { } })
         })
         .catch((e) => {
-          console.error(e)
-          console.log('Failed to reconnect to websocket')
+          console.error('Failed to reconnect to websocket: ' + e)
         })
     }
 

@@ -44,7 +44,7 @@ export default class Order {
     this.S = ecdsa_signature.s;
     this.nonce = proof_of_work_nonce;
     this.creationTime = new Date(parseInt(creation_timestamp));
-    this.expirationTime = new Date(parseInt(expiration_timestamp));
+    this.expirationTime = expiration_timestamp && new Date(parseInt(expiration_timestamp));
     this.closeTimestamp = close_timestamp && new Date(close_timestamp);
     this.usdAmountAtClose = usd_amount_at_close && new BigNumber(usd_amount_at_close);
     this.usdFeeAtCreation = usd_fee_at_creation && new BigNumber(usd_fee_at_creation);
