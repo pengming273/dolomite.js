@@ -35,7 +35,7 @@ export default class MarketService extends Service {
   onUpdate(callback) {
     this.on('/v1/markets', 'update')
       // .build(data => Market.build(data)) // TODO: Implement this correctly when updated
-      .then(callback());
+      .then(callback);
   }
 
   onUpdateAll(callback) {
