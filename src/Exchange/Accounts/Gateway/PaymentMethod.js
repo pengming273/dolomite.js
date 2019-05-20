@@ -1,12 +1,12 @@
 
 class PaymentMethod {
-  constructor({ wyre_payment_method_id, created_at, name, nickname, default_ticker,
+  constructor({ trade_account_payment_method_id, created_at, name, nickname, default_ticker,
     status, type, method_name, last_four_digits, brand, country_code, is_disabled,
     is_deposits_supported, is_payments_supported, chargeable_currency_tickers, depositable_currency_tickers,
-    blockchains, min_charge_amount, max_charge_amount, min_deposit_amount, max_deposit_amount, 
+    blockchain_deposit_addresses, min_charge_amount, max_charge_amount, min_deposit_amount, max_deposit_amount, 
     method_expiration_display }) {
     
-    this.id = wyre_payment_method_id;
+    this.id = trade_account_payment_method_id;
     this.transferType = type;
     this.countryCode = country_code;
     
@@ -18,7 +18,7 @@ class PaymentMethod {
     this.defaultTicker = default_ticker;
     this.withdrawableTickers = chargeable_currency_tickers || [];
     this.depositableTickers = depositable_currency_tickers || [];
-    this.withdrawalAddresses = blockchains || {};
+    this.withdrawalAddresses = blockchain_deposit_addresses || {};
 
     this.minWithdrawalAmount = min_charge_amount;
     this.maxWithdrawalAmount = max_charge_amount;

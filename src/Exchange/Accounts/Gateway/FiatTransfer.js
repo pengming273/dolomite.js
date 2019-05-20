@@ -1,7 +1,15 @@
 import SRN from './SRN';
 
 const rounded = (n) => n && parseFloat(n.toFixed(5));
-const toHistory = (history) => history.map(item => item);
+const toHistory = (history = []) => history.map(item => item);
+
+const isValidPaymentMethod = (srn) => 
+  srn.type === SRN.Type.PAYMENT_METHOD && srn.subType === SRN.SubType.ACH;
+const isValidAddress = (srn) => srn.type === SRN.Type.ETHEREUM_ADDRESS;
+const isWithdrawal = ({ source, destination }) => isValidAddress(source) && isValidPaymentMethod(destination);
+const isDeposit = ({ source, destination }) => isValidPaymentMethod(source) && isValidAddress(destination);
+const toType = (input) => (isWithdrawal(input) && FiatTransfer.Type.WITHDRAWAL)
+  || (isDeposit(input) && FiatTransfer.Type.DEPOSIT) || null;
 
 class FiatTransfer {
   constructor({ identifier, fee_amounts, total_fee_amount, transfer_gateway_status, source,
@@ -26,11 +34,20 @@ class FiatTransfer {
     this.cancelledAt = cancelled_timestamp && new Date(cancelled_timestamp);
     this.expiredAt = expiration_timestamp && new Date(expiration_timestamp);
     this.completedAt = completed_timestamp && new Date(completed_timestamp);
+
+    // Custom fields
+    this.type = toType({ source: this.source, destination: this.destination });
+    this.isDolomiteTransfer = !!this.type;
   }
 
   static build(transfersJson) {
     return transfersJson.map(transfer => new FiatTransfer(transfer));
   }
+}
+
+FiatTransfer.Type = {
+  DEPOSIT: 'DEPOSIT',
+  WITHDRAWAL: 'WITHDRAWAL'
 }
 
 export default FiatTransfer;
