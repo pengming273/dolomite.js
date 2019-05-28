@@ -1,4 +1,5 @@
 import AuthService from '../../../common/AuthService';
+import PrepareMessage from '../Verification/PrepareMessage';
 
 import PaymentMethod from './PaymentMethod';
 import FiatTransfer from './FiatTransfer';
@@ -19,6 +20,10 @@ export default class VerificationService extends AuthService {
     },
     withdrawalPreview: {
       post: '/v1/accounts/:account_id/transfers/withdraws/preview'
+    },
+    createDeposit: {
+      post: '/v1/accounts/:account_id/transfers/deposits/create',
+      prepare: '/v1/accounts/:account_id/transfers/deposits/create/prepare/:address'
     }
   };
 
@@ -30,9 +35,6 @@ export default class VerificationService extends AuthService {
   };
 
   /////////////////////////
-  
-  // ----------------------------------------------
-  // Payment Methods
 
   getPaymentMethods(accountId) {
     return this.requiresAuth.get('paymentMethods', { account_id: accountId })
@@ -46,13 +48,13 @@ export default class VerificationService extends AuthService {
     });
   }
 
-  // ----------------------------------------------
-  // Fiat Transfers
-
   getTransferHistory(accountId) {
     return this.requiresAuth.get('transferHistory', { account_id: accountId })
       .then(body => FiatTransfer.build(body.data.transfers));
   }
+
+  // ----------------------------------------------
+  // Deposit
 
   getDepositPreview({ accountId, address, amount, paymentMethodId, depositTicker }) {
     return this.requiresAuth.post('depositPreview', {
@@ -64,6 +66,27 @@ export default class VerificationService extends AuthService {
       deposit_asset_ticker: depositTicker
     }).then(body => new FiatTransfer(body.data));
   }
+
+  prepareDeposit({ address, accountId }) {
+    return this.requiresAuth.prepare('createDeposit', { address, account_id: accountId })
+      .then(body => new PrepareMessage(body.data));
+  }
+
+  deposit({ accountId, address, amount, paymentMethodId, depositTicker, signature, prepareId }) {
+    return this.requiresAuth.post('createDeposit', {
+      account_id: accountId,
+      amount: amount,
+      amount_ticker: 'USD',
+      wallet_address: address,
+      payment_method_id: paymentMethodId,
+      deposit_asset_ticker: depositTicker,
+      auth_signature: signature,
+      prepare_id: prepareId
+    }).then(body => new FiatTransfer(body.data));
+  }
+
+  // ----------------------------------------------
+  // Withdrawal
 
   getWithdrawalPreview({ accountId, address, amount, paymentMethodId, withdrawalTicker }) {
     return this.requiresAuth.post('withdrawalPreview', {

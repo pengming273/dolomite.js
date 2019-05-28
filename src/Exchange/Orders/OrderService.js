@@ -58,7 +58,7 @@ export default class OrderService extends Service {
       dolomite_order_id_param: dolomiteOrderId,
       owner_address: owner, 
       ecdsa_signature: { v, r, s },
-      timestamp: timestamp
+      cancellation_timestamp: timestamp
     });
   }
 

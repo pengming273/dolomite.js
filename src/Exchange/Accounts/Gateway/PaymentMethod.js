@@ -1,4 +1,11 @@
 
+const isWithdrawalSupported = (method) => 
+  method.status === 'ACTIVE' &&
+  !method.isDisabled &&
+  method.supportsWithdrawals &&
+  method.withdrawableTickers.includes('USD') &&
+  method.withdrawalAddresses.ETH !==  null;
+
 class PaymentMethod {
   constructor({ trade_account_payment_method_id, created_at, name, nickname, default_ticker,
     status, type, method_name, last_four_digits, brand, country_code, is_disabled,
@@ -12,12 +19,12 @@ class PaymentMethod {
     
     this.status = status;
     this.isDisabled = is_disabled;
-    this.supportsDeposits = is_deposits_supported;
-    this.supportsWithdrawals = is_payments_supported;
-
+    this.supportsWithdrawals = is_deposits_supported; // Withdrawal from crypto to bank
+    this.supportsDeposits = is_payments_supported; // Deposit from bank to crypto
+    
     this.defaultTicker = default_ticker;
-    this.withdrawableTickers = chargeable_currency_tickers || [];
-    this.depositableTickers = depositable_currency_tickers || [];
+    this.depositableTickers = chargeable_currency_tickers || []; // Withdrawal from crypto to bank
+    this.withdrawableTickers = depositable_currency_tickers || []; // Deposit from bank to crypto
     this.withdrawalAddresses = blockchain_deposit_addresses || {};
 
     this.minWithdrawalAmount = min_charge_amount;
@@ -34,6 +41,10 @@ class PaymentMethod {
     this.methodExpirationDisplay = method_expiration_display;
 
     this.createdAt = new Date(created_at);
+
+    // Custom fields
+    this.isDirectCryptoWithdrawalSupported = isWithdrawalSupported(this);
+    this.cryptoWithdrawalAddress = this.withdrawalAddresses.ETH;
   }
 
   static build(paymentMethodsJson) {

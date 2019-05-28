@@ -17,7 +17,8 @@ class AuthService extends Service {
   get requiresAuth() {
     return {
       get: this.withAuth(this.get.bind(this)),
-      post: this.withAuth(this.post.bind(this))
+      post: this.withAuth(this.post.bind(this)),
+      prepare: this.withAuth(this.prepare.bind(this))
     };
   };
 }

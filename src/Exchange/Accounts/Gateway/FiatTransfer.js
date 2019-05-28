@@ -3,10 +3,10 @@ import SRN from './SRN';
 const rounded = (n) => n && parseFloat(n.toFixed(5));
 const toHistory = (history = []) => history.map(item => item);
 
-const isValidPaymentMethod = (srn) => 
-  srn.type === SRN.Type.PAYMENT_METHOD && srn.subType === SRN.SubType.ACH;
+const isValidPaymentMethod = (srn, requireAch = true) => 
+  srn.type === SRN.Type.PAYMENT_METHOD && (!requireAch || srn.subType === SRN.SubType.ACH);
 const isValidAddress = (srn) => srn.type === SRN.Type.ETHEREUM_ADDRESS;
-const isWithdrawal = ({ source, destination }) => isValidAddress(source) && isValidPaymentMethod(destination);
+const isWithdrawal = ({ source, destination }) => isValidAddress(source) && isValidPaymentMethod(destination, false);
 const isDeposit = ({ source, destination }) => isValidPaymentMethod(source) && isValidAddress(destination);
 const toType = (input) => (isWithdrawal(input) && FiatTransfer.Type.WITHDRAWAL)
   || (isDeposit(input) && FiatTransfer.Type.DEPOSIT) || null;
@@ -15,7 +15,7 @@ class FiatTransfer {
   constructor({ identifier, fee_amounts, total_fee_amount, transfer_gateway_status, source,
     destination, creation_timestamp, completed_timestamp, cancelled_timestamp,
     expiration_timestamp, status_history, source_ticker, source_amount,
-    destination_ticker, destination_amount, exchange_rate }) {
+    destination_ticker, destination_amount, exchange_rate, blockchain_transaction }) {
     
     this.id = identifier;
     this.fees = fee_amounts || {};
@@ -29,6 +29,7 @@ class FiatTransfer {
     this.destinationAmount = rounded(destination_amount);
     this.exchangeRate = rounded(exchange_rate);
     this.reverseExchangeRate = rounded(1 / exchange_rate);
+    this.blockchainTransaction = blockchain_transaction;
     this.history = toHistory(status_history);
     this.createdAt = new Date(creation_timestamp);
     this.cancelledAt = cancelled_timestamp && new Date(cancelled_timestamp);
